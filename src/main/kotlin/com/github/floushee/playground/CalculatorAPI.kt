@@ -11,25 +11,35 @@ import org.slf4j.LoggerFactory
 fun Routing.calculatorAPI() {
     route("/api") {
         route("/calculator") {
-            get("/sum/{a}/{b}") {
-                val operands = Operands.of(call.parameters)
-                if (operands != null) {
-                    val result = Result(add(operands.a, operands.b))
-                    call.respond(result)
-                } else {
+            get("/{operator}/{a}/{b}") {
+                val operator = Operator.of(call.parameters)
+                if (operator == null) {
                     call.respond(HttpStatusCode.BadRequest)
                     return@get
                 }
+
+                val operands = Operands.of(call.parameters)
+                if (operands == null) {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@get
+                }
+
+                val result = Result(operator.operate(operands.a, operands.b))
+                call.respond(result)
             }
-            get("/multiply/{a}/{b}") {
-                val operands = Operands.of(call.parameters)
-                if (operands != null) {
-                    val result = Result(multiply(operands.a, operands.b))
-                    call.respond(result)
-                } else {
-                    call.respond(HttpStatusCode.BadRequest)
-                    return@get
-                }
+        }
+    }
+}
+
+internal  sealed class Operator(val operate: (Double, Double) -> Double) {
+    class Plus() : Operator(::add)
+    class Multiply : Operator(::multiply)
+    companion object {
+        fun of(parameters: io.ktor.http.Parameters): Operator? {
+            return when (parameters["operator"]) {
+                "plus" -> Plus()
+                "multiply" -> Multiply()
+                else -> null
             }
         }
     }
@@ -38,24 +48,18 @@ fun Routing.calculatorAPI() {
 internal class Operands(val a: Double, val b: Double) {
 
     companion object {
-
-        val logger = LoggerFactory.getLogger(this::class.java)
-
         fun of(parameters: io.ktor.http.Parameters): Operands? {
             val a = parameters["a"]
             val b = parameters["b"]
             if (a == null) {
-                logger.debug("Missing argument [a]")
                 return null
             }
             if (b == null) {
-                logger.debug("Missing argumt [b]")
                 return null
             }
             return try {
                 Operands(a.toDouble(), b.toDouble())
             } catch (e: Throwable) {
-                logger.error("Could not parse argument [$a] or [$b]")
                 null
             }
         }
