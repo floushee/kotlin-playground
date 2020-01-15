@@ -35,12 +35,14 @@ internal  sealed class Operator(val operate: (Double, Double) -> Double) {
     class Plus() : Operator(::add)
     class Multiply : Operator(::multiply)
     class Subtract : Operator(::subtract)
+    class Divide : Operator(::divide)
     companion object {
         fun of(parameters: io.ktor.http.Parameters): Operator? {
             return when (parameters["operator"]) {
                 "plus" -> Plus()
                 "multiply" -> Multiply()
                 "subtract" -> Subtract()
+                "divide" -> Divide()
                 else -> null
             }
         }
