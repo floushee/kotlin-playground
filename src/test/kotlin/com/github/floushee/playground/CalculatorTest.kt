@@ -14,4 +14,9 @@ class CalculatorTest {
     fun `0 *  10 = 0`() {
         assertEquals(0.0, multiply(10.0, 0.0),"0 * 10 should equal 0")
     }
+
+    @Test
+    fun `5 - 3 = 2`() {
+        assertEquals(2.0, subtract(5.0, 3.0), "5 - 3 should equal 2")
+    }
 }

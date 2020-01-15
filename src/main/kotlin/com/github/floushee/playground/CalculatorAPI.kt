@@ -34,11 +34,13 @@ fun Routing.calculatorAPI() {
 internal  sealed class Operator(val operate: (Double, Double) -> Double) {
     class Plus() : Operator(::add)
     class Multiply : Operator(::multiply)
+    class Subtract : Operator(::subtract)
     companion object {
         fun of(parameters: io.ktor.http.Parameters): Operator? {
             return when (parameters["operator"]) {
                 "plus" -> Plus()
                 "multiply" -> Multiply()
+                "subtract" -> Subtract()
                 else -> null
             }
         }
