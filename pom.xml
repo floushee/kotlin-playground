@@ -16,7 +16,7 @@
         <ktor.version>1.2.6</ktor.version>
         <junit.version>5.5.2</junit.version>
         <mockk_version>1.9.3.kotlin12</mockk_version>
-        <logback.version>1.2.3</logback.version>
+        <logback.version>1.2.13</logback.version>
         <maven.assembly.plugin.version>2.6</maven.assembly.plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
